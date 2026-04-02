@@ -1,25 +1,15 @@
 <?php
-// scores_api.php - Place this in your chem-project folder
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "alymchems_db";
-
-$conn = mysqli_connect(
-    getenv('MYSQLHOST'),
-    getenv('MYSQLUSER'),
-    getenv('MYSQLPASSWORD'),
-    getenv('MYSQLDATABASE'),
-    getenv('MYSQLPORT')
+$conn = new mysqli(
+    getenv('MYSQLHOST')     ?: $_ENV['MYSQLHOST'],
+    getenv('MYSQLUSER')     ?: $_ENV['MYSQLUSER'],
+    getenv('MYSQLPASSWORD') ?: $_ENV['MYSQLPASSWORD'],
+    getenv('MYSQLDATABASE') ?: $_ENV['MYSQLDATABASE'],
+    (int)(getenv('MYSQLPORT') ?: $_ENV['MYSQLPORT'] ?: 3306)
 );
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+if ($conn->connect_error) {
+    die(json_encode(['error' => 'DB connection failed: ' . $conn->connect_error]));
 }
-
 $action = $_GET['action'] ?? '';
 
 // ─── GET LEADERBOARD ───────────────────────────────────────────────────────
