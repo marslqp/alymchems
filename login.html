@@ -6,76 +6,167 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Poppins", sans-serif; background: radial-gradient(circle at top, #0f172a, #020617); color: white; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .auth-container { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        body {
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
         h2 { margin-bottom: 25px; font-size: 28px; color: #38bdf8; }
         .input-group { text-align: left; margin-bottom: 20px; }
         label { display: block; font-size: 14px; color: #94a3b8; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 16px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #38bdf8; }
-        .btn-auth { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-auth:hover { background: #1d4ed8; }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: #38bdf8; background: rgba(255, 255, 255, 0.12); }
+        .btn-auth {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-auth:hover { background: #1d4ed8; transform: translateY(-2px); }
         .toggle-link { margin-top: 20px; font-size: 14px; color: #94a3b8; }
         .toggle-link a { color: #38bdf8; text-decoration: none; font-weight: 600; }
-        .msg { font-size: 14px; margin-top: 10px; min-height: 20px; }
-        .err { color: #f87171; } .ok { color: #4ade80; }
+        .error-msg {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #f87171;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
     </style>
 </head>
 <body>
+
+<!-- LOGIN FORM -->
 <div class="auth-container" id="login-form">
     <h2>Welcome Back</h2>
-    <div class="input-group"><label>Full Name</label><input type="text" id="login-name" placeholder="Ivanov Ivan"></div>
-    <div class="input-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
-    <div class="msg err" id="login-error"></div>
-    <button class="btn-auth" onclick="handleLogin()">Login</button>
-    <div class="toggle-link">Don't have an account? <a href="#" onclick="toggleAuth()">Sign Up</a></div>
+    <div class="error-msg" id="login-error"></div>
+    <form onsubmit="handleLogin(event)">
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="login-user" required placeholder="Ivanov Ivan">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="login-pass" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-auth">Login</button>
+    </form>
+    <div class="toggle-link">
+        Don't have an account? <a href="#" onclick="toggleAuth()">Sign Up</a>
+    </div>
 </div>
+
+<!-- SIGNUP FORM -->
 <div class="auth-container" id="signup-form" style="display:none;">
     <h2>Create Account</h2>
-    <div class="input-group"><label>Full Name</label><input type="text" id="signup-name" placeholder="Ivanov Ivan"></div>
-    <div class="input-group"><label>Grade</label><input type="number" id="signup-grade" placeholder="7" min="7" max="11"></div>
-    <div class="input-group"><label>Password</label><input type="password" id="signup-pass" placeholder="••••••••"></div>
-    <div class="msg err" id="signup-error"></div>
-    <div class="msg ok" id="signup-success"></div>
-    <button class="btn-auth" onclick="handleSignup()">Sign Up</button>
-    <div class="toggle-link">Already have an account? <a href="#" onclick="toggleAuth()">Login</a></div>
+    <div class="error-msg" id="signup-error"></div>
+
+    <!-- action ведёт на signup.php, method=POST -->
+    <form action="signup.php" method="POST" onsubmit="saveToLocalStorage(event)">
+        <div class="input-group">
+            <label>Full Name</label>
+            <!-- name="fullname" — именно это читает PHP через $_POST['fullname'] -->
+            <input type="text" name="fullname" required placeholder="Ivanov Ivan">
+        </div>
+        <div class="input-group">
+            <label>Grade</label>
+            <!-- name="grade" -->
+            <input type="number" name="grade" required placeholder="7" min="7" max="11">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <!-- name="password" -->
+            <input type="password" name="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-auth">Sign Up</button>
+    </form>
+    <div class="toggle-link">
+        Already have an account? <a href="#" onclick="toggleAuth()">Login</a>
+    </div>
 </div>
+
 <script>
+    // Показываем ошибки из URL (?error=exists и т.д.)
+    window.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        if (error) {
+            toggleAuth(); // показываем форму регистрации
+            const el = document.getElementById('signup-error');
+            el.style.display = 'block';
+            if (error === 'exists')  el.innerText = '❌ This name is already taken.';
+            if (error === 'short')   el.innerText = '❌ Password must be at least 6 characters.';
+            if (error === 'same')    el.innerText = '❌ Password is too simple.';
+            if (error === 'empty')   el.innerText = '❌ Please fill in all fields.';
+        }
+    });
+
     function toggleAuth() {
-        const l=document.getElementById('login-form'), s=document.getElementById('signup-form');
-        if(l.style.display==='none'){l.style.display='block';s.style.display='none';}
-        else{l.style.display='none';s.style.display='block';}
+        const login = document.getElementById('login-form');
+        const signup = document.getElementById('signup-form');
+        if (login.style.display === 'none') {
+            login.style.display = 'block';
+            signup.style.display = 'none';
+        } else {
+            login.style.display = 'none';
+            signup.style.display = 'block';
+        }
     }
-    function getUsers(){try{return JSON.parse(localStorage.getItem('allUsers')||'[]');}catch(e){return[];}}
-    function handleSignup(){
-        const name=document.getElementById('signup-name').value.trim();
-        const grade=document.getElementById('signup-grade').value.trim();
-        const pass=document.getElementById('signup-pass').value;
-        const err=document.getElementById('signup-error');
-        const ok=document.getElementById('signup-success');
-        err.innerText=''; ok.innerText='';
-        if(!name||!grade||!pass){err.innerText='Please fill all fields.';return;}
-        const users=getUsers();
-        if(users.find(u=>u.name.toLowerCase()===name.toLowerCase())){err.innerText='Name already taken. Try logging in.';return;}
-        const newUser={name,grade,pass,score:0,joined:new Date().toLocaleDateString()};
-        users.push(newUser);
-        localStorage.setItem('allUsers',JSON.stringify(users));
-        localStorage.setItem('currentUser',JSON.stringify(newUser));
-        ok.innerText='Account created! Redirecting...';
-        setTimeout(()=>{window.location.href='index.html';},1000);
+
+    // Сохраняем имя в localStorage ДО отправки формы (чтобы index.html знал имя)
+    function saveToLocalStorage(e) {
+        const nameInput = document.querySelector('input[name="fullname"]');
+        const gradeInput = document.querySelector('input[name="grade"]');
+        if (nameInput && nameInput.value) {
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: nameInput.value,
+                grade: gradeInput.value
+            }));
+        }
+        // Форма отправляется дальше (не preventDefault) → PHP получает данные
     }
-    function handleLogin(){
-        const name=document.getElementById('login-name').value.trim();
-        const pass=document.getElementById('login-pass').value;
-        const err=document.getElementById('login-error');
-        err.innerText='';
-        if(!name||!pass){err.innerText='Please fill all fields.';return;}
-        const users=getUsers();
-        const user=users.find(u=>u.name.toLowerCase()===name.toLowerCase()&&u.pass===pass);
-        if(!user){err.innerText='Wrong name or password. Please try again.';return;}
-        localStorage.setItem('currentUser',JSON.stringify(user));
-        window.location.href='index.html';
+
+    function handleLogin(e) {
+        e.preventDefault();
+        alert('Login через БД будет добавлен позже.');
+        window.location.href = 'index.html';
     }
 </script>
+
 </body>
 </html>
