@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlymChems | Alymbek Datka Lyceum</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+img{max-width:100%;height:auto;display:block;}
+body{font-family:"Poppins",sans-serif;background:radial-gradient(circle at top,#0f172a,#020617);color:white;overflow-x:hidden;}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 50px;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;}
+.nav-links{display:flex;align-items:center;gap:20px;}
+.nav-links a{color:white;text-decoration:none;font-weight:400;transition:0.3s;padding:5px 10px;}
+.nav-links a:hover{color:#38bdf8;}
+#auth-display{padding:8px 20px!important;background:#2563eb!important;border-radius:8px;color:white!important;text-decoration:none;font-size:14px;font-weight:600;transition:0.3s;display:inline-block;}
+#auth-display:hover{background:#1d4ed8!important;transform:scale(1.05);}
+
+/* HERO */
+.hero{text-align:center;padding:120px 20px;position:relative;}
+.bubble{position:absolute;border-radius:50%;background:rgba(56,189,248,0.2);animation:float 8s infinite ease-in-out;}
+.bubble:nth-child(1){width:60px;height:60px;left:10%;top:80%;}
+.bubble:nth-child(2){width:100px;height:100px;left:80%;top:70%;animation-delay:2s;}
+.bubble:nth-child(3){width:40px;height:40px;left:50%;top:90%;animation-delay:4s;}
+@keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-80px);}100%{transform:translateY(0);}}
+.hero h1{font-size:50px;font-weight:800;}
+.hero p{color:#94a3b8;margin:15px 0 30px;}
+.btn{padding:20px 40px;background:#2563eb;border:none;border-radius:8px;cursor:pointer;color:white;transition:0.3s;font-size:20px;margin:5px;}
+.btn:hover{transform:scale(1.05);background:#1d4ed8;}
+
+/* SECTION */
+.section{padding:70px 40px;max-width:1200px;margin:auto;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+.card{background:rgba(255,255,255,0.05);padding:25px;border-radius:20px;backdrop-filter:blur(10px);transition:0.4s;cursor:pointer;}
+.card:hover{transform:translateY(-10px) scale(1.02);}
+.card h3{margin-bottom:10px;}
+.card p{color:#94a3b8;font-size:14px;}
+
+/* INFO */
+.info{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:50px;}
+.info img{width:100%;max-width:350px;height:auto;justify-self:center;border-radius:20px;}
+@media(max-width:800px){.info{grid-template-columns:1fr;} nav{padding:15px 20px;} .nav-links{gap:10px;} .hero h1{font-size:32px;}}
+
+/* FOOTER */
+footer{text-align:center;padding:30px;background:rgba(255,255,255,0.05);}
+.big-label{font-size:80px;font-weight:800;text-align:center;letter-spacing:15px;text-transform:uppercase;color:white;margin-bottom:40px;user-select:none;}
+
+/* STATS BANNER */
+.stats-banner{background:linear-gradient(135deg,rgba(37,99,235,0.3),rgba(56,189,248,0.15));border:1px solid rgba(56,189,248,0.3);border-radius:24px;padding:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;text-align:center;margin:40px 0;}
+.stat-item .num{font-size:42px;font-weight:800;color:#38bdf8;}
+.stat-item .lbl{color:#94a3b8;font-size:14px;margin-top:4px;}
+
+/* QUOTE */
+.quote-box{background:rgba(56,189,248,0.07);border-left:4px solid #38bdf8;border-radius:0 16px 16px 0;padding:24px 30px;margin:30px 0;font-style:italic;font-size:18px;color:#cbd5e1;line-height:1.7;}
+.quote-author{margin-top:10px;font-style:normal;font-size:14px;color:#64748b;}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:30px;}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#2563eb,#38bdf8);}
+.timeline-item{position:relative;margin-bottom:30px;padding-left:20px;}
+.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:12px;height:12px;border-radius:50%;background:#38bdf8;box-shadow:0 0 10px #38bdf8;}
+.timeline-item h4{color:#38bdf8;font-size:15px;}
+.timeline-item p{color:#94a3b8;font-size:13px;margin-top:4px;}
+
+/* LEADERBOARD */
+.leaderboard{background:rgba(255,255,255,0.04);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);}
+.lb-header{background:linear-gradient(135deg,rgba(37,99,235,0.4),rgba(56,189,248,0.2));padding:16px 24px;font-weight:700;display:grid;grid-template-columns:50px 1fr 100px;gap:10px;font-size:14px;color:#94a3b8;}
+.lb-row{padding:14px 24px;display:grid;grid-template-columns:50px 1fr 100px;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,0.05);transition:0.2s;}
+.lb-row:hover{background:rgba(255,255,255,0.03);}
+.lb-rank{font-weight:800;font-size:20px;}
+.lb-score{color:#38bdf8;font-weight:700;}
+.lb-name{font-weight:600;}
+.rank-1{color:#fbbf24;}
+.rank-2{color:#94a3b8;}
+.rank-3{color:#cd7c3c;}
+
+/* PERIODIC MINI */
+.elem-mini{display:inline-block;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;margin:5px;text-align:center;width:70px;transition:0.3s;cursor:default;}
+.elem-mini:hover{background:rgba(56,189,248,0.2);border-color:#38bdf8;transform:scale(1.1);}
+.elem-mini .sym{font-size:20px;font-weight:800;color:#38bdf8;}
+.elem-mini .nm{font-size:9px;color:#64748b;}
+
+/* MOLECULE VIZ */
+.molecule-display{text-align:center;padding:20px;background:rgba(0,0,0,0.3);border-radius:16px;margin:20px 0;font-size:40px;letter-spacing:5px;font-weight:800;}
+.fact-card{background:linear-gradient(135deg,rgba(37,99,235,0.2),rgba(16,185,129,0.1));border:1px solid rgba(56,189,248,0.2);border-radius:16px;padding:24px;margin:12px 0;}
+.fact-card .fact-icon{font-size:32px;margin-bottom:10px;}
+.fact-card h4{color:#38bdf8;margin-bottom:8px;}
+.fact-card p{color:#94a3b8;font-size:14px;line-height:1.6;}
+
+/* DID YOU KNOW */
+.dyk-box{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:16px;padding:24px;position:relative;overflow:hidden;}
+.dyk-box::before{content:'💡';position:absolute;right:20px;top:15px;font-size:40px;opacity:0.2;}
+.dyk-title{color:#4ade80;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="logo" style="font-weight:800;font-size:20px;">⚗️ AlymChems</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#chapters">Learn</a>
+        <a href="login.html" id="auth-display">Login</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <h1>🧪 Chemistry Starts Here</h1>
+    <h3><p style="color:#38bdf8;margin-top:10px;">Alymbek Datka Lyceum — Science Division</p></h3>
+    <p style="max-width:600px;margin:0 auto 30px;">Explore, experiment, and excel. Your journey through the world of atoms, molecules and reactions begins on this platform.</p>
+    <button class="btn" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">🚀 Start Learning</button>
+    <button class="btn" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About School</button>
+</section>
+
+<!-- STATS BANNER -->
+<section class="section" style="padding-top:0;">
+    <div class="stats-banner">
+        <div class="stat-item"><div class="num">500+</div><div class="lbl">Students</div></div>
+        <div class="stat-item"><div class="num">12</div><div class="lbl">Chemistry Teachers</div></div>
+        <div class="stat-item"><div class="num">30+</div><div class="lbl">Olympiad Medals</div></div>
+        <div class="stat-item"><div class="num">3</div><div class="lbl">Science Labs</div></div>
+        <div class="stat-item"><div class="num">∞</div><div class="lbl">Curiosity</div></div>
+    </div>
+</section>
+
+<!-- INSPIRATION QUOTE -->
+<section class="section" style="padding-top:0;">
+    <div class="quote-box">
+        "The science of today is the technology of tomorrow. Every reaction you learn, every element you discover — is a step toward changing the world."
+        <div class="quote-author">— AlymChems Platform, for the students of Alymbek Datka Lyceum</div>
+    </div>
+</section>
+
+<!-- ABOUT SCHOOL -->
+<section class="section info" id="about">
+    <div>
+        <h2>About Our School</h2>
+        <p style="margin-top:15px;">Alymbek Datka Lyceum is one of the leading educational institutions in Kyrgyzstan, focused on modern science education with an emphasis on analytical thinking and innovation.</p>
+        <p style="margin-top:15px;">Chemistry plays a key role in our academic program, helping students develop scientific curiosity, problem-solving skills, and a passion for discovery.</p>
+        <div style="margin-top:24px;">
+            <span style="display:inline-block;background:rgba(37,99,235,0.2);border:1px solid #2563eb;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px;">🏫 Founded 1995</span>
+            <span style="display:inline-block;background:rgba(16,185,129,0.2);border:1px solid #10b981;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px;">🏆 National Award 2022</span>
+            <span style="display:inline-block;background:rgba(56,189,248,0.2);border:1px solid #38bdf8;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px;">🔬 3 Modern Labs</span>
+        </div>
+    </div>
+    <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=500" alt="school" style="max-width:350px;border-radius:20px;">
+</section>
+
+<section class="section info">
+    <img src="https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=500" alt="lab" style="max-width:350px;border-radius:20px;">
+    <div>
+        <h2>Our Chemistry Labs</h2>
+        <p style="margin-top:15px;">Our state-of-the-art chemistry labs combine theory with hands-on practice. Students conduct real experiments in a safe, supervised environment.</p>
+        <p style="margin-top:15px;">Topics span organic chemistry, the periodic table, stoichiometry, electrochemistry, and modern scientific applications.</p>
+        <div class="timeline" style="margin-top:24px;">
+            <div class="timeline-item"><h4>Grade 7</h4><p>Introduction to chemistry, atoms, states of matter</p></div>
+            <div class="timeline-item"><h4>Grade 8</h4><p>Chemical reactions, acids & bases, metals</p></div>
+            <div class="timeline-item"><h4>Grade 9</h4><p>Organic chemistry, electrochemistry, stoichiometry</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- DID YOU KNOW -->
+<section class="section">
+    <h2 style="text-align:center;margin-bottom:30px;">💡 Did You Know?</h2>
+    <div class="cards">
+        <div class="fact-card"><div class="fact-icon">⚛️</div><h4>Your Body is Chemistry</h4><p>The human body contains about 60 chemical elements. Oxygen, carbon, hydrogen, and nitrogen make up over 96% of your body mass.</p></div>
+        <div class="fact-card"><div class="fact-icon">💧</div><h4>Water is Weird</h4><p>Water is one of the only substances that expands when it freezes. This is why ice floats — and why life in frozen lakes can survive winter!</p></div>
+        <div class="fact-card"><div class="fact-icon">🌟</div><h4>Stars Make Elements</h4><p>Every atom heavier than hydrogen in your body was forged inside a star that exploded billions of years ago. You are literally made of stardust.</p></div>
+        <div class="fact-card"><div class="fact-icon">🔋</div><h4>Electrochemistry Powers Us</h4><p>Every message your neurons send, every heartbeat — powered by electrochemical reactions with sodium, potassium, and calcium ions.</p></div>
+    </div>
+</section>
+
+<!-- ELEMENTS SHOWCASE -->
+<section class="section">
+    <h2 style="text-align:center;margin-bottom:10px;">🧬 Elements You'll Master</h2>
+    <p style="text-align:center;color:#94a3b8;margin-bottom:24px;font-size:14px;">Hover over any element to explore it</p>
+    <div style="text-align:center;">
+        <div class="elem-mini"><div class="sym">H</div><div class="nm">Hydrogen</div></div>
+        <div class="elem-mini"><div class="sym">C</div><div class="nm">Carbon</div></div>
+        <div class="elem-mini"><div class="sym">O</div><div class="nm">Oxygen</div></div>
+        <div class="elem-mini"><div class="sym">Na</div><div class="nm">Sodium</div></div>
+        <div class="elem-mini"><div class="sym">Fe</div><div class="nm">Iron</div></div>
+        <div class="elem-mini"><div class="sym">Au</div><div class="nm">Gold</div></div>
+        <div class="elem-mini"><div class="sym">Ag</div><div class="nm">Silver</div></div>
+        <div class="elem-mini"><div class="sym">Cu</div><div class="nm">Copper</div></div>
+        <div class="elem-mini"><div class="sym">N</div><div class="nm">Nitrogen</div></div>
+        <div class="elem-mini"><div class="sym">Ca</div><div class="nm">Calcium</div></div>
+        <div class="elem-mini"><div class="sym">Cl</div><div class="nm">Chlorine</div></div>
+        <div class="elem-mini"><div class="sym">Zn</div><div class="nm">Zinc</div></div>
+    </div>
+</section>
+
+<!-- ACTIVITIES -->
+<section class="section">
+    <h2 style="text-align:center;margin-bottom:30px;">🎓 Activities & Projects</h2>
+    <div class="cards">
+        <div class="card"><h3>🧪 Lab Experiments</h3><p>Hands-on experiments that bring chemistry to life in our state-of-the-art labs</p></div>
+        <div class="card" onclick="location.href='upcoming-events.html'"><h3>🏆 Upcoming Competitions</h3><p>Participation in national olympiads and science contests. Click to see dates!</p></div>
+        <div class="card"><h3>🔬 Research Projects</h3><p>Students design and execute their own chemistry research projects with teacher guidance</p></div>
+        <div class="card"><h3>🌍 Science Fairs</h3><p>Annual science fair where students present innovative experiments to the community</p></div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+    <h2 style="text-align:center;margin-bottom:10px;">🎮 Platform Features</h2>
+    <p style="text-align:center;color:#94a3b8;margin-bottom:30px;font-size:14px;">Everything you need to master chemistry — all in one place</p>
+    <div class="cards">
+        <div class="card" onclick="location.href='games.html'">
+            <h3>🎮 Games</h3>
+            <p>Symbol Master, Reaction Lab, Molecule Builder, Element Catcher & more. Play and earn points that save to your profile!</p>
+        </div>
+        <div class="card" onclick="location.href='quizzes.html'">
+            <h3>📝 Quizzes</h3>
+            <p>Topic-based quizzes for Grades 7-9. Test your knowledge on acids, reactions, organic chemistry and more.</p>
+        </div>
+        <div class="card" onclick="location.href='teachers.html'">
+            <h3>👩‍🏫 Teachers</h3>
+            <p>Meet our expert chemistry educators who guide and inspire students every day.</p>
+        </div>
+        <div class="card" onclick="location.href='upcoming-events.html'">
+            <h3>📅 Events</h3>
+            <p>Stay up-to-date with olympiads, science fairs, and lab workshops happening at our school.</p>
+        </div>
+    </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="section">
+    <h2 style="text-align:center;margin-bottom:10px;">🏅 Top Students</h2>
+    <p style="text-align:center;color:#94a3b8;margin-bottom:24px;font-size:14px;">Play games and earn points to appear here!</p>
+    <div class="leaderboard">
+        <div class="lb-header"><span>#</span><span>Student</span><span>Score</span></div>
+        <div id="lb-body"><div style="padding:20px;text-align:center;color:#475569;">Play games to see scores here!</div></div>
+    </div>
+</section>
+
+<!-- DYK ROTATING FACT -->
+<section class="section">
+    <div class="dyk-box">
+        <div class="dyk-title">Fun Chemistry Fact</div>
+        <div id="dyk-text" style="font-size:17px;line-height:1.7;color:#cbd5e1;"></div>
+        <button onclick="nextFact()" style="margin-top:16px;background:rgba(74,222,128,0.2);border:1px solid #4ade80;color:#4ade80;padding:8px 20px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;">Next Fact →</button>
+    </div>
+</section>
+
+<!-- LEARN SECTION -->
+<section class="section" id="chapters">
+    <h1 class="big-label">LEARN</h1>
+    <h3 style="text-align:center;margin-bottom:30px;">Chapters & Topics</h3>
+    <div style="text-align:center;margin-bottom:30px;">
+        <button class="btn" onclick="showGrade(7)">Grade 7</button>
+        <button class="btn" onclick="showGrade(8)">Grade 8</button>
+        <button class="btn" onclick="showGrade(9)">Grade 9</button>
+    </div>
+    <div id="topics" class="cards"></div>
+</section>
+
+<!-- INSPIRATION SECTION -->
+<section class="section">
+    <h2 style="text-align:center;margin-bottom:30px;">🌟 Inspiring Chemists</h2>
+    <div class="cards">
+        <div class="card" style="border-left:3px solid #38bdf8;">
+            <h3>Marie Curie</h3>
+            <p style="margin-top:8px;font-size:13px;">"Nothing in life is to be feared, only to be understood." — First woman to win a Nobel Prize. Discovered polonium and radium.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #fbbf24;">
+            <h3>Dmitri Mendeleev</h3>
+            <p style="margin-top:8px;font-size:13px;">Created the Periodic Table of Elements in 1869. He even predicted the properties of elements not yet discovered!</p>
+        </div>
+        <div class="card" style="border-left:3px solid #4ade80;">
+            <h3>Linus Pauling</h3>
+            <p style="margin-top:8px;font-size:13px;">Won TWO Nobel Prizes — Chemistry AND Peace. His work on chemical bonding transformed modern chemistry.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #f87171;">
+            <h3>You Could Be Next!</h3>
+            <p style="margin-top:8px;font-size:13px;">Every great chemist started as a curious student. Study hard, stay curious, and maybe one day YOUR name will inspire others.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p style="font-weight:700;margin-bottom:8px;">⚗️ AlymChems | Alymbek Datka Lyceum Science Platform</p>
+    <p style="color:#475569;font-size:13px;">Email: alymbekdatka@school.com | Phone: +996 555 555 555</p>
+    <p style="color:#334155;font-size:12px;margin-top:8px;">© 2026 AlymChems. Built with passion for science education.</p>
+</footer>
+
+<script>
+// AUTH DISPLAY
+document.addEventListener('DOMContentLoaded',function(){
+    const userData=localStorage.getItem('currentUser');
+    const authBtn=document.getElementById('auth-display');
+    if(userData){
+        try{
+            const user=JSON.parse(userData);
+            if(user&&user.name){
+                authBtn.innerText='👤 '+user.name;
+                authBtn.href='profile.html';
+                authBtn.style.background='rgba(56,189,248,0.15)!important';
+                authBtn.style.cssText='padding:8px 20px;background:rgba(56,189,248,0.15);border:1px solid #38bdf8;border-radius:8px;color:#38bdf8;text-decoration:none;font-size:14px;font-weight:600;transition:0.3s;display:inline-block;';
+            }
+        }catch(e){}
+    }
+    loadLeaderboard();
+});
+
+// LEADERBOARD
+function loadLeaderboard(){
+    try{
+        const users=JSON.parse(localStorage.getItem('allUsers')||'[]');
+        const top=users.filter(u=>u.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+        const body=document.getElementById('lb-body');
+        if(top.length===0){return;}
+        const rankIcons=['🥇','🥈','🥉','4️⃣','5️⃣'];
+        const rankClasses=['rank-1','rank-2','rank-3','',''];
+        body.innerHTML=top.map((u,i)=>`
+            <div class="lb-row">
+                <span class="lb-rank ${rankClasses[i]}">${rankIcons[i]}</span>
+                <span class="lb-name">${u.name} <span style="color:#475569;font-size:12px;">Grade ${u.grade}</span></span>
+                <span class="lb-score">⭐ ${u.score}</span>
+            </div>
+        `).join('');
+    }catch(e){}
+}
+
+// LEARN DATA
+const data={
+    7:[
+        {name:"Introduction to Chemistry",link:"https://www.youtube.com/results?search_query=introduction+to+chemistry+grade+7"},
+        {name:"States of Matter",link:"https://www.youtube.com/results?search_query=states+of+matter+chemistry"},
+        {name:"Atoms and Molecules",link:"https://www.youtube.com/results?search_query=atoms+and+molecules+basics"},
+        {name:"Periodic Table Basics",link:"https://www.youtube.com/results?search_query=periodic+table+basics+for+beginners"}
+    ],
+    8:[
+        {name:"Chemical Reactions",link:"https://www.youtube.com/results?search_query=chemical+reactions+grade+8"},
+        {name:"Acids and Bases",link:"https://www.youtube.com/results?search_query=acids+and+bases+chemistry"},
+        {name:"Metals and Nonmetals",link:"https://www.youtube.com/results?search_query=metals+and+nonmetals+chemistry"},
+        {name:"Solutions & Mixtures",link:"https://www.youtube.com/results?search_query=solutions+mixtures+chemistry"}
+    ],
+    9:[
+        {name:"Organic Chemistry Basics",link:"https://www.youtube.com/results?search_query=organic+chemistry+basics"},
+        {name:"Electrochemistry",link:"https://www.youtube.com/results?search_query=electrochemistry+basics"},
+        {name:"Chemical Bonding",link:"https://www.youtube.com/results?search_query=chemical+bonding+types"},
+        {name:"Stoichiometry",link:"https://www.youtube.com/results?search_query=stoichiometry+explained+easy"}
+    ]
+};
+
+function showGrade(grade){
+    const container=document.getElementById("topics");
+    container.innerHTML="";
+    data[grade].forEach(topic=>{
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`<h3>📺 ${topic.name}</h3><p>Click to watch YouTube explanation</p>`;
+        card.onclick=()=>window.open(topic.link,"_blank");
+        container.appendChild(card);
+    });
+}
+
+// DID YOU KNOW
+const facts=[
+    "The smell of rain is caused by a chemical called petrichor — produced when rainwater reacts with soil oils and bacteria.",
+    "Diamond and graphite are both made entirely of carbon, but their atomic structure makes one the hardest natural substance and the other soft enough to write with.",
+    "The element Gallium melts in your hand at just 29.8°C — barely above room temperature!",
+    "There are more possible chemical compounds than there are stars in the observable universe.",
+    "Gold is so unreactive it is found in its pure form in nature — that's why ancient civilizations could use it directly.",
+    "A single teaspoon of water contains about 167 trillion trillion water molecules (1.67 × 10²³).",
+    "Helium was first discovered on the SUN before it was found on Earth — the name comes from 'Helios', Greek for Sun.",
+    "The same chemistry that makes explosives also makes fertilizers — nitrogen compounds are both destructive and life-giving.",
+];
+let factIdx=0;
+function nextFact(){ factIdx=(factIdx+1)%facts.length; document.getElementById('dyk-text').innerText=facts[factIdx]; }
+document.addEventListener('DOMContentLoaded',()=>{ document.getElementById('dyk-text').innerText=facts[0]; });
+</script>
+</body>
+</html>
