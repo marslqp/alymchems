@@ -8,10 +8,16 @@ $user = "root";
 $pass = "";
 $db   = "alymchems_db";
 
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit();
+$conn = mysqli_connect(
+    getenv('MYSQLHOST'),
+    getenv('MYSQLUSER'),
+    getenv('MYSQLPASSWORD'),
+    getenv('MYSQLDATABASE'),
+    getenv('MYSQLPORT')
+);
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 
 $action = $_GET['action'] ?? '';
