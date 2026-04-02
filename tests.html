@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry Tests | AlymChems</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+    * {margin:0;padding:0;box-sizing:border-box;}
+    body {
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(circle at top, #0f172a, #020617);
+        color: white; min-height: 100vh;
+        display: flex; flex-direction: column; align-items: center;
+        padding: 50px 20px;
+    }
+    .top-bar { width:100%; max-width:800px; display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+    .back-btn { color:#38bdf8; text-decoration:none; font-weight:600; font-size:14px; }
+    .container {
+        max-width: 800px; width: 100%;
+        background: rgba(255,255,255,0.04);
+        padding: 40px; border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.07);
+    }
+    h1 { margin-bottom: 30px; font-size: 32px; color: #38bdf8; font-weight: 800; }
+    .hidden { display: none; }
+
+    .btn {
+        padding: 14px 24px; background: #2563eb; border: none; border-radius: 10px;
+        color: white; cursor: pointer; margin: 8px; font-size: 15px; font-weight: 600;
+        transition: 0.3s; font-family: inherit;
+    }
+    .btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+    .btn-secondary { background: #475569; }
+    .btn-secondary:hover { background: #334155; }
+
+    .topic-btn {
+        display: block; width: 100%; max-width: 350px; margin: 8px auto;
+        padding: 16px 24px; background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+        color: white; cursor: pointer; text-align: left; font-family: inherit;
+        font-size: 15px; font-weight: 600; transition: 0.3s;
+    }
+    .topic-btn:hover { border-color: #38bdf8; background: rgba(56,189,248,0.08); transform: translateX(4px); }
+    .topic-btn.completed { border-color: #10b981; color: #10b981; }
+    .topic-btn.completed::after { content: ' ✓ Completed'; font-size: 12px; color: #10b981; }
+
+    .question-box { margin-top: 20px; }
+    .progress-info { color: #94a3b8; margin-bottom: 5px; font-size: 13px; }
+    .progress-bar-wrap { width: 100%; background: rgba(255,255,255,0.08); border-radius: 20px; height: 6px; margin-bottom: 20px; }
+    .progress-bar-fill { height: 6px; background: linear-gradient(90deg, #2563eb, #38bdf8); border-radius: 20px; transition: width 0.4s; }
+
+    .question-text { font-size: 19px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+        padding: 14px 18px; background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+        color: white; cursor: pointer; text-align: left; transition: 0.2s;
+        font-family: inherit; font-size: 15px;
+    }
+    .option-btn:hover { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); }
+    .option-btn.correct { background: rgba(16,185,129,0.2); border-color: #10b981; color: #4ade80; cursor: default; }
+    .option-btn.wrong   { background: rgba(248,113,113,0.2); border-color: #f87171; color: #f87171; cursor: default; }
+
+    .score-card { text-align: center; }
+    .score-big { font-size: 72px; font-weight: 800; color: #38bdf8; line-height: 1; }
+    .score-label { color: #94a3b8; font-size: 14px; margin: 5px 0 20px; }
+    .result-msg { font-size: 18px; margin: 15px 0; }
+    .points-badge { background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); padding: 12px 24px; border-radius: 12px; display: inline-block; margin: 15px 0; color: #38bdf8; font-weight: 700; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">← Home</a>
+    <div style="font-size:13px; color:#38bdf8; font-weight:600;" id="user-badge"></div>
+</div>
+
+<div class="container" id="main-container">
+    <div id="step-grade">
+        <h1>📝 Practice Tests</h1>
+        <p style="color:#94a3b8; margin-bottom:25px;">Select your grade to begin</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button class="btn" onclick="selectGrade(7)">Grade 7</button>
+            <button class="btn" onclick="selectGrade(8)">Grade 8</button>
+            <button class="btn" onclick="selectGrade(9)">Grade 9</button>
+        </div>
+    </div>
+
+    <div id="step-topic" class="hidden">
+        <h1 id="topic-title">Select Topic</h1>
+        <div id="topic-list"></div>
+        <br>
+        <button class="btn btn-secondary" onclick="goBack()">← Back</button>
+    </div>
+
+    <div id="step-quiz" class="hidden">
+        <div class="question-box">
+            <div class="progress-info" id="progress">Question 1 of 5</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="quiz-progress-bar" style="width:0%"></div></div>
+            <div class="question-text" id="question-text"></div>
+            <div class="options" id="options-container"></div>
+        </div>
+    </div>
+
+    <div id="step-result" class="hidden">
+        <div class="score-card">
+            <h1>Test Complete!</h1>
+            <div class="score-big" id="final-score">0</div>
+            <div class="score-label">correct answers</div>
+            <div id="points-badge-wrap"></div>
+            <p class="result-msg" id="feedback-msg"></p>
+            <br>
+            <button class="btn" onclick="restartTest()">🔄 Try Again</button>
+            <button class="btn btn-secondary" onclick="goToGrade()">← Change Topic</button>
+            <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentGrade = null, currentTopic = null;
+let currentQuestions = [], currentIndex = 0, score = 0;
+let currentUser = null, completedTests = {};
+
+const quizData = {
+    9: {
+        "Organic Chemistry": [
+            {q:"What is the simplest alkane?", a:["Ethane","Methane","Propane","Butane"], correct:1},
+            {q:"Which element is the backbone of organic chemistry?", a:["Oxygen","Nitrogen","Carbon","Hydrogen"], correct:2},
+            {q:"What functional group does an alcohol contain?", a:["-COOH","-OH","-NH2","-CHO"], correct:1},
+            {q:"What is the general formula for alkanes?", a:["CₙH₂ₙ","CₙH₂ₙ₋₂","CₙH₂ₙ₊₂","CₙHₙ"], correct:2},
+            {q:"Which process breaks down long-chain hydrocarbons?", a:["Distillation","Cracking","Polymerisation","Fermentation"], correct:1},
+        ],
+        "Electrochemistry": [
+            {q:"What device converts chemical energy to electrical?", a:["Motor","Resistor","Battery","Transformer"], correct:2},
+            {q:"At which electrode does oxidation occur?", a:["Cathode","Anode","Both","Neither"], correct:1},
+            {q:"What is the unit of electric charge?", a:["Volt","Ampere","Coulomb","Ohm"], correct:2},
+            {q:"Which metal is used as a sacrificial anode to protect iron?", a:["Copper","Zinc","Silver","Gold"], correct:1},
+            {q:"What happens at the cathode during electrolysis?", a:["Oxidation","Reduction","Combustion","Ionization"], correct:1},
+        ],
+    },
+    8: {
+        "Acids and Bases": [
+            {q:"What is the pH of pure water?", a:["5","3","7","10"], correct:2},
+            {q:"What colour does litmus turn in acid?", a:["Blue","Red","Green","Yellow"], correct:1},
+            {q:"Which of these is a strong acid?", a:["Acetic acid","Citric acid","Hydrochloric acid","Carbonic acid"], correct:2},
+            {q:"What is formed when an acid reacts with a base?", a:["Oxide + Water","Salt + Water","Salt + Gas","Acid + Water"], correct:1},
+            {q:"What is the pH of a strongly alkaline solution?", a:["1","7","9","14"], correct:3},
+        ],
+        "Chemical Reactions": [
+            {q:"Substances at the START of a reaction are called?", a:["Products","Chemicals","Reactants","Elements"], correct:2},
+            {q:"What type of reaction releases heat?", a:["Endothermic","Photosynthetic","Exothermic","Electrolytic"], correct:2},
+            {q:"What is the law of conservation of mass?", a:["Mass is created","Mass is destroyed","Mass in = Mass out","Mass doubles"], correct:2},
+            {q:"Which factor does NOT affect reaction rate?", a:["Temperature","Concentration","Colour","Catalyst"], correct:2},
+            {q:"What does a catalyst do?", a:["Gets used up","Slows the reaction","Speeds up reaction without being consumed","Changes the products"], correct:2},
+        ],
+    },
+    7: {
+        "Introduction to Chemistry": [
+            {q:"What is the smallest unit of an element?", a:["Molecule","Atom","Cell","Compound"], correct:1},
+            {q:"What are the three states of matter?", a:["Solid, liquid, plasma","Solid, liquid, gas","Liquid, gas, air","Solid, ice, steam"], correct:1},
+            {q:"What is a mixture?", a:["Two elements chemically bonded","Two or more substances not chemically combined","A pure substance","An element"], correct:1},
+            {q:"What method separates a solid from a liquid?", a:["Distillation","Evaporation","Filtration","Crystallisation"], correct:2},
+            {q:"Which of these is a pure substance?", a:["Salt water","Air","Gold","Milk"], correct:2},
+        ],
+        "Physical vs Chemical Changes": [
+            {q:"Melting ice is an example of?", a:["Chemical change","Physical change","Decomposition","Combustion"], correct:1},
+            {q:"Which is a sign of a chemical change?", a:["Change in shape","Change in size","Production of gas or light","Melting"], correct:2},
+            {q:"Burning wood is a?", a:["Physical change","Reversible change","Chemical change","Phase change"], correct:2},
+            {q:"What change can usually be reversed?", a:["Chemical","Physical","Both","Neither"], correct:1},
+            {q:"Rusting of iron is a?", a:["Physical change","Phase change","Chemical change","Mixture"], correct:2},
+        ],
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+        currentUser = JSON.parse(userData);
+        document.getElementById('user-badge').innerText = '👤 ' + currentUser.name;
+        loadCompletedTests();
+    }
+});
+
+async function loadCompletedTests() {
+    if (!currentUser) return;
+    try {
+        const r = await fetch(`scores_api.php?action=user_data&user=${encodeURIComponent(currentUser.name)}`);
+        const data = await r.json();
+        if (data.completed) {
+            data.completed.forEach(key => {
+                if (key.startsWith('quiz_')) completedTests[key] = true;
+            });
+        }
+    } catch(e) {}
+}
+
+function selectGrade(grade) {
+    currentGrade = grade;
+    document.getElementById('step-grade').classList.add('hidden');
+    document.getElementById('step-topic').classList.remove('hidden');
+    document.getElementById('topic-title').innerText = `Grade ${grade} Topics`;
+    const list = document.getElementById('topic-list');
+    list.innerHTML = '';
+    const topics = quizData[grade] ? Object.keys(quizData[grade]) : [];
+    if (!topics.length) {
+        list.innerHTML = '<p style="color:#94a3b8; text-align:center;">No tests available yet.</p>';
+        return;
+    }
+    topics.forEach(topic => {
+        const key = `quiz_${grade}_${topic}`;
+        const btn = document.createElement('button');
+        btn.className = 'topic-btn' + (completedTests[key] ? ' completed' : '');
+        btn.innerText = topic;
+        btn.onclick = () => startQuiz(topic);
+        list.appendChild(btn);
+    });
+}
+
+function startQuiz(topic) {
+    currentTopic = topic;
+    currentQuestions = quizData[currentGrade][topic];
+    currentIndex = 0; score = 0;
+    document.getElementById('step-topic').classList.add('hidden');
+    document.getElementById('step-quiz').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = currentQuestions[currentIndex];
+    const pct = (currentIndex / currentQuestions.length) * 100;
+    document.getElementById('progress').innerText = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+    document.getElementById('quiz-progress-bar').style.width = pct + '%';
+    document.getElementById('question-text').innerText = q.q;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    q.a.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn'; btn.innerText = opt;
+        btn.onclick = () => checkAnswer(i);
+        container.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected) {
+    const q = currentQuestions[currentIndex];
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach(b => b.style.pointerEvents = 'none');
+    btns[selected].classList.add(selected === q.correct ? 'correct' : 'wrong');
+    if (selected !== q.correct) btns[q.correct].classList.add('correct');
+    if (selected === q.correct) score++;
+    setTimeout(() => {
+        currentIndex++;
+        if (currentIndex < currentQuestions.length) showQuestion();
+        else showResult();
+    }, 700);
+}
+
+async function showResult() {
+    document.getElementById('step-quiz').classList.add('hidden');
+    document.getElementById('step-result').classList.remove('hidden');
+    document.getElementById('final-score').innerText = `${score}/${currentQuestions.length}`;
+    const pct = score / currentQuestions.length;
+    let msg = '';
+    if (pct === 1) msg = '🏆 Perfect score! You are a Chemistry Master!';
+    else if (pct >= 0.8) msg = '🎉 Excellent! Almost perfect!';
+    else if (pct >= 0.6) msg = '👍 Good job! Keep studying.';
+    else msg = '📚 Keep practicing! You\'ll get there!';
+    document.getElementById('feedback-msg').innerText = msg;
+
+    // Save score if not already done
+    const key = `quiz_${currentGrade}_${currentTopic}`;
+    const points = Math.round(pct * 30); // Up to 30 points per quiz
+    const badgeWrap = document.getElementById('points-badge-wrap');
+    if (!completedTests[key] && points > 0 && currentUser) {
+        try {
+            const r = await fetch('scores_api.php?action=save', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({user: currentUser.name, activity_key: key, points})
+            });
+            const data = await r.json();
+            if (data.success) {
+                completedTests[key] = true;
+                badgeWrap.innerHTML = `<div class="points-badge">+${points} pts saved to your account! ⚡</div>`;
+            }
+        } catch(e) {}
+    } else if (!currentUser) {
+        badgeWrap.innerHTML = `<div class="points-badge" style="border-color:rgba(255,255,255,0.2); color:#94a3b8;">Login to save your score!</div>`;
+    } else {
+        badgeWrap.innerHTML = `<div class="points-badge">Already completed — no extra points.</div>`;
+    }
+}
+
+function restartTest() {
+    document.getElementById('step-result').classList.add('hidden');
+    startQuiz(currentTopic);
+}
+function goToGrade() {
+    document.getElementById('step-result').classList.add('hidden');
+    selectGrade(currentGrade);
+}
+function goBack() {
+    document.getElementById('step-topic').classList.add('hidden');
+    document.getElementById('step-grade').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

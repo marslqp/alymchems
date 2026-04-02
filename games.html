@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Fun Lab | AlymChems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+        body{font-family:'Poppins',sans-serif;background:radial-gradient(circle at top,#0f172a,#020617);color:white;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:50px 20px;overflow-x:hidden;}
+        .back-btn{position:fixed;top:20px;left:20px;color:#38bdf8;text-decoration:none;font-weight:600;z-index:100;background:rgba(0,0,0,0.5);padding:8px 14px;border-radius:10px;}
+        .score-board{position:fixed;top:20px;right:20px;background:rgba(56,189,248,0.15);padding:10px 25px;border-radius:15px;border:1px solid rgba(56,189,248,0.3);font-weight:800;font-size:20px;color:#38bdf8;z-index:100;cursor:pointer;transition:0.3s;}
+        .score-board:hover{background:rgba(56,189,248,0.25);}
+        .save-notif{position:fixed;top:70px;right:20px;background:#10b981;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:100;opacity:0;transition:opacity 0.5s;pointer-events:none;}
+        h1{font-size:38px;font-weight:800;text-shadow:0 0 15px rgba(56,189,248,0.5);margin-bottom:5px;}
+        .subtitle{color:#94a3b8;margin-bottom:25px;}
+        .game-nav{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap;justify-content:center;}
+        .nav-btn{background:rgba(255,255,255,0.05);border:none;padding:10px 18px;color:#94a3b8;border-radius:30px;cursor:pointer;transition:0.3s;font-weight:600;font-size:14px;}
+        .nav-btn.active{background:#2563eb;color:white;box-shadow:0 0 15px rgba(37,99,235,0.4);}
+        .game-area{background:rgba(255,255,255,0.05);backdrop-filter:blur(15px);padding:30px;border-radius:24px;max-width:720px;width:100%;min-height:520px;display:flex;flex-direction:column;align-items:center;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);position:relative;}
+        .game-desc{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:12px;padding:12px 18px;font-size:13px;color:#93c5fd;margin-bottom:20px;text-align:center;max-width:500px;line-height:1.6;}
+        .hidden{display:none!important;}
+        input[type="text"]{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);width:100%;max-width:300px;background:rgba(0,0,0,0.3);color:white;text-align:center;margin-bottom:15px;outline:none;font-size:16px;}
+        .btn{padding:10px 25px;border:none;border-radius:10px;cursor:pointer;font-weight:600;transition:0.3s;font-size:14px;}
+        .btn-primary{background:#2563eb;color:white;}
+        .btn-primary:hover{background:#1d4ed8;}
+        .btn-success{background:#10b981;color:white;margin-top:15px;}
+        .btn-help{background:transparent;border:1px solid #f59e0b;color:#f59e0b;margin-top:10px;}
+        #catcher-container{width:100%;height:300px;position:relative;background:rgba(0,0,0,0.4);border-radius:15px;overflow:hidden;border:1px solid #38bdf8;cursor:none;}
+        #player{position:absolute;bottom:10px;width:90px;height:35px;background:#38bdf8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 0 15px #38bdf8;left:50%;transform:translateX(-50%);pointer-events:none;color:#020617;}
+        .falling-item{position:absolute;font-weight:800;font-size:24px;pointer-events:none;}
+        #catcher-timer{position:absolute;top:10px;left:10px;color:#f59e0b;font-weight:800;font-size:18px;}
+        #feedback{margin-top:15px;font-weight:600;min-height:24px;text-align:center;font-size:18px;}
+        .periodic-table{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;}
+        .elem-card{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:0.3s;}
+        .elem-card:hover{background:rgba(56,189,248,0.15);border-color:#38bdf8;}
+        .elem-card.selected{background:rgba(37,99,235,0.3);border-color:#2563eb;}
+        .elem-card .symbol{font-size:24px;font-weight:800;color:#38bdf8;}
+        .elem-card .elem-name{font-size:11px;color:#94a3b8;margin-top:2px;}
+        .elem-card .mass{font-size:10px;color:#475569;}
+        .ptable-question{font-size:18px;font-weight:700;margin-bottom:20px;text-align:center;}
+        .reagent{padding:10px 16px;background:rgba(255,255,255,0.1);margin:5px;border-radius:8px;cursor:grab;font-weight:700;font-size:18px;border:1px solid rgba(255,255,255,0.15);transition:0.2s;}
+        .reagent:hover{background:rgba(56,189,248,0.2);}
+        .external-game-frame{width:100%;height:480px;border:none;border-radius:16px;}
+        .game-title-badge{font-size:11px;background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#4ade80;padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+    </style>
+</head>
+<body>
+<div class="score-board" onclick="saveScoreToProfile()" title="Click to save score to profile">⭐ <span id="score-val">0</span> pts</div>
+<div class="save-notif" id="save-notif">✅ Score saved to profile!</div>
+<a href="index.html" class="back-btn">← Home</a>
+
+<h1>Chem Fun Lab</h1>
+<p class="subtitle">Interactive Chemistry Playground</p>
+
+<div class="game-nav">
+    <button class="nav-btn active" onclick="changeGame('elements')">🔤 Symbol Master</button>
+    <button class="nav-btn" onclick="changeGame('reactor')">⚗️ Reaction Lab</button>
+    <button class="nav-btn" onclick="changeGame('assembly')">🧬 Molecule Builder</button>
+    <button class="nav-btn" onclick="changeGame('catcher')">🎯 Element Catcher</button>
+    <button class="nav-btn" onclick="changeGame('ptable')">📊 Periodic Quiz</button>
+    <button class="nav-btn" onclick="changeGame('external')">🌐 Atom Builder <span class="game-title-badge">Online</span></button>
+</div>
+
+<div class="game-area">
+    <div class="game-header" style="text-align:center;">
+        <h3 id="g-title">Game</h3>
+        <div class="game-desc" id="g-desc">Instructions appear here</div>
+    </div>
+
+    <!-- ELEMENTS GAME -->
+    <div id="elements-game" class="g-content">
+        <div id="el-symbol" style="font-size:80px;font-weight:800;color:#38bdf8;margin:10px 0;text-shadow:0 0 30px rgba(56,189,248,0.6);">H</div>
+        <input type="text" id="el-input" placeholder="Type element name..." onkeydown="if(event.key==='Enter')checkElements()">
+        <button class="btn btn-primary" onclick="checkElements()">Submit</button>
+    </div>
+
+    <!-- REACTOR GAME -->
+    <div id="reactor-game" class="g-content hidden">
+        <div style="display:flex;gap:30px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center;">
+            <div id="reagent-list" style="display:flex;flex-direction:column;"></div>
+            <div style="width:130px;height:160px;border:4px solid #cbd5e1;border-top:none;border-radius:0 0 20px 20px;position:relative;" ondragover="event.preventDefault()" ondrop="dropReagent(event)">
+                <div style="position:absolute;top:-24px;width:100%;text-align:center;font-size:13px;color:#94a3b8;">Drop here ↓</div>
+                <div id="r-liquid" style="position:absolute;bottom:0;width:100%;height:30%;background:#38bdf8;transition:0.8s;border-radius:0 0 15px 15px;"></div>
+            </div>
+        </div>
+        <div id="r-formula" style="margin-top:16px;font-size:20px;font-weight:800;color:#f59e0b;"></div>
+    </div>
+
+    <!-- ASSEMBLY GAME -->
+    <div id="assembly-game" class="g-content hidden">
+        <div id="as-target" style="background:rgba(0,0,0,0.3);padding:15px 30px;border-radius:12px;font-size:24px;font-weight:800;margin-bottom:20px;color:#38bdf8;"></div>
+        <div id="as-pool" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;"></div>
+        <div id="as-current" style="font-size:28px;color:#4ade80;font-weight:800;min-height:40px;letter-spacing:3px;"></div>
+    </div>
+
+    <!-- CATCHER GAME -->
+    <div id="catcher-game" class="g-content hidden" style="width:100%;">
+        <div id="catcher-container">
+            <div id="catcher-timer">Time: 30s</div>
+            <div id="player">FLASK</div>
+        </div>
+        <button class="btn btn-primary" id="start-catcher" style="margin-top:15px;" onclick="startCatcherGame()">▶ Start (30 Seconds)</button>
+    </div>
+
+    <!-- PERIODIC TABLE QUIZ -->
+    <div id="ptable-game" class="g-content hidden" style="width:100%;">
+        <div class="ptable-question" id="pt-question"></div>
+        <div class="periodic-table" id="pt-grid"></div>
+    </div>
+
+    <!-- EXTERNAL GAME -->
+    <div id="external-game" class="g-content hidden" style="width:100%;text-align:center;">
+        <p style="color:#94a3b8;font-size:13px;margin-bottom:12px;">Build real atoms by adding protons, neutrons & electrons!</p>
+        <a href="https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html" target="_blank" class="btn btn-primary" style="display:inline-block;text-decoration:none;font-size:16px;padding:14px 30px;">
+            🚀 Open Atom Builder (PhET)
+        </a>
+        <p style="color:#475569;font-size:12px;margin-top:16px;">Opens in a new tab — free simulation by University of Colorado</p>
+        <div style="margin-top:30px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:16px;padding:20px;">
+            <div style="font-size:14px;color:#93c5fd;font-weight:600;margin-bottom:10px;">🎯 Challenge:</div>
+            <p style="color:#94a3b8;font-size:13px;">Build Carbon, Oxygen and Sodium atoms, then come back and answer the Periodic Quiz for bonus points!</p>
+            <button class="btn btn-success" style="margin-top:14px;" onclick="awardExternal()">✅ I completed the challenge! (+30 pts)</button>
+            <div id="ext-claimed" style="color:#4ade80;font-size:13px;margin-top:8px;display:none;">Awesome! Points awarded!</div>
+        </div>
+    </div>
+
+    <div id="feedback"></div>
+    <button id="show-ans-btn" class="btn btn-help hidden" onclick="revealAnswer()">💡 Show Answer</button>
+    <button id="next-btn" class="btn btn-success hidden" onclick="nextQuestion()">Next Question →</button>
+</div>
+
+<script>
+const db = {
+    elements:{
+        title:"Symbol Master",
+        desc:"A chemical symbol flashes on screen. Type the full English name of the element to earn 10 points. After 3 wrong attempts, you can reveal the answer.",
+        q:[{s:"Au",a:"gold"},{s:"Ag",a:"silver"},{s:"Hg",a:"mercury"},{s:"Na",a:"sodium"},{s:"Fe",a:"iron"},{s:"Pb",a:"lead"},{s:"K",a:"potassium"},{s:"Cu",a:"copper"},{s:"Sn",a:"tin"},{s:"W",a:"tungsten"}]
+    },
+    reactor:{
+        title:"Reaction Lab",
+        desc:"A chemical reaction is waiting to happen! Drag the correct reagent into the beaker. Match each substance to start the reaction and earn 10 points.",
+        q:[
+            {t:"H₂O + ?",c:"Na",p:["Na","Au","Ag"],col:"#ef4444",formula:"2Na + 2H₂O → 2NaOH + H₂↑"},
+            {t:"H₂SO₄ + ?",c:"Zn",p:["Zn","Glass","Oil"],col:"#fbbf24",formula:"Zn + H₂SO₄ → ZnSO₄ + H₂↑"},
+            {t:"CuSO₄ + ?",c:"Fe",p:["Fe","Sand","Plastic"],col:"#3b82f6",formula:"Fe + CuSO₄ → FeSO₄ + Cu"},
+            {t:"HCl + ?",c:"Ca",p:["Ca","Ne","Ar"],col:"#8b5cf6",formula:"Ca + 2HCl → CaCl₂ + H₂↑"}
+        ]
+    },
+    assembly:{
+        title:"Molecule Builder",
+        desc:"Build the molecule shown by clicking atoms in the correct order. One wrong atom resets the chain. Complete it perfectly for 10 points!",
+        q:[
+            {n:"Water",f:"H₂O",c:["H","H","O"],p:["H","O","C","N"]},
+            {n:"Methane",f:"CH₄",c:["C","H","H","H","H"],p:["C","H","O","N"]},
+            {n:"Ammonia",f:"NH₃",c:["N","H","H","H"],p:["N","H","O","C"]},
+            {n:"CO₂",f:"CO₂",c:["C","O","O"],p:["C","O","H","N"]}
+        ]
+    },
+    catcher:{
+        title:"Element Catcher",
+        desc:"Move your mouse to control the flask. Catch Metals (+5 pts each) shown in gold and avoid Non-metals (-10 pts) shown in red. You have 30 seconds!"
+    },
+    ptable:{
+        title:"Periodic Table Quiz",
+        desc:"Four elements appear on screen. Select the one that matches the question. Correct answers earn 15 points each!",
+        q:[
+            {question:"Which element has atomic number 1?",correct:"H",options:["H","He","Li","Be"]},
+            {question:"Which is a Noble Gas?",correct:"Ne",options:["Ne","Na","N","Ni"]},
+            {question:"Which element is liquid at room temperature (metal)?",correct:"Hg",options:["Hg","Au","Ag","Fe"]},
+            {question:"Which element is essential for respiration?",correct:"O",options:["O","Os","Og","Or"]},
+            {question:"Which alkali metal explodes in water?",correct:"K",options:["K","Ca","Mg","Al"]},
+            {question:"Which element makes up ~78% of air?",correct:"N",options:["N","O","Ar","CO"]},
+        ]
+    },
+    external:{
+        title:"Atom Builder",
+        desc:"Build real atoms in this interactive PhET simulation by the University of Colorado. Add protons, neutrons, and electrons to see how atoms form. Complete the challenge to earn bonus points!"
+    }
+};
+
+const ptableInfo = {
+    "H":{name:"Hydrogen",mass:"1.008"},"He":{name:"Helium",mass:"4.003"},"Li":{name:"Lithium",mass:"6.941"},
+    "Be":{name:"Beryllium",mass:"9.012"},"N":{name:"Nitrogen",mass:"14.01"},"O":{name:"Oxygen",mass:"16.00"},
+    "Ne":{name:"Neon",mass:"20.18"},"Na":{name:"Sodium",mass:"22.99"},"Mg":{name:"Magnesium",mass:"24.31"},
+    "Al":{name:"Aluminum",mass:"26.98"},"Ni":{name:"Nickel",mass:"58.69"},"Ca":{name:"Calcium",mass:"40.08"},
+    "Fe":{name:"Iron",mass:"55.85"},"Cu":{name:"Copper",mass:"63.55"},"Hg":{name:"Mercury",mass:"200.6"},
+    "Au":{name:"Gold",mass:"196.9"},"Ag":{name:"Silver",mass:"107.9"},"Pb":{name:"Lead",mass:"207.2"},
+    "K":{name:"Potassium",mass:"39.10"},"Ar":{name:"Argon",mass:"39.95"},"Or":{name:"—",mass:"—"},
+    "Os":{name:"Osmium",mass:"190.2"},"Og":{name:"Oganesson",mass:"294"}
+};
+
+let currentType='elements',qIdx=0,score=0,attempts=0,isLocked=false;
+let buildChain=[],solvedQuestions=new Set();
+let extClaimed=false;
+
+// Load saved session score
+const savedSession = parseInt(sessionStorage.getItem('gameScore')||'0');
+score = savedSession;
+document.getElementById('score-val').innerText=score;
+
+function changeGame(type){
+    currentType=type; qIdx=0; stopCatcher(); buildChain=[];
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.g-content').forEach(el=>el.classList.add('hidden'));
+    document.getElementById(type+'-game').classList.remove('hidden');
+    document.getElementById('g-title').innerText=db[type].title;
+    document.getElementById('g-desc').innerText=db[type].desc;
+    resetUI();
+    if(type!=='catcher'&&type!=='external') renderQuestion();
+    if(type==='external'){
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('show-ans-btn').classList.add('hidden');
+    }
+}
+
+function renderQuestion(){
+    resetUI();
+    const data=db[currentType].q[qIdx];
+    if(currentType==='elements'){
+        document.getElementById('el-symbol').innerText=data.s;
+        document.getElementById('el-input').value='';
+        setTimeout(()=>document.getElementById('el-input').focus(),100);
+    } else if(currentType==='reactor'){
+        document.getElementById('r-liquid').style.height="30%";
+        document.getElementById('r-liquid').style.background="#38bdf8";
+        document.getElementById('r-formula').innerText="";
+        document.querySelector('.game-area h3').innerText=db[currentType].title+" — "+data.t;
+        const list=document.getElementById('reagent-list'); list.innerHTML="";
+        data.p.forEach(i=>{
+            const d=document.createElement('div'); d.className='reagent'; d.innerText=i; d.draggable=true;
+            d.ondragstart=(e)=>e.dataTransfer.setData("text",i); list.appendChild(d);
+        });
+    } else if(currentType==='assembly'){
+        document.getElementById('as-target').innerText=data.n+" ("+data.f+")";
+        document.getElementById('as-current').innerText=""; buildChain=[];
+        const pool=document.getElementById('as-pool'); pool.innerHTML="";
+        data.p.forEach(atom=>{
+            const b=document.createElement('button'); b.className='btn'; b.style.background="rgba(255,255,255,0.1)"; b.style.color="white"; b.style.fontSize="18px"; b.style.fontWeight="800"; b.innerText=atom;
+            b.onclick=()=>{
+                buildChain.push(atom);
+                document.getElementById('as-current').innerText=buildChain.join("");
+                if(buildChain[buildChain.length-1]!==data.c[buildChain.length-1]){fail();buildChain=[];document.getElementById('as-current').innerText="";}
+                else if(buildChain.length===data.c.length) win();
+            };
+            pool.appendChild(b);
+        });
+    } else if(currentType==='ptable'){
+        const q=data;
+        document.getElementById('pt-question').innerText=q.question;
+        const grid=document.getElementById('pt-grid'); grid.innerHTML="";
+        q.options.forEach(sym=>{
+            const info=ptableInfo[sym]||{name:sym,mass:"?"};
+            const card=document.createElement('div'); card.className='elem-card';
+            card.innerHTML=`<div class="symbol">${sym}</div><div class="elem-name">${info.name}</div><div class="mass">${info.mass}</div>`;
+            card.onclick=()=>{
+                if(isLocked) return;
+                if(sym===q.correct) win(15); else fail();
+            };
+            grid.appendChild(card);
+        });
+    }
+}
+
+function checkElements(){
+    if(isLocked) return;
+    const val=document.getElementById('el-input').value.trim().toLowerCase();
+    if(val===db.elements.q[qIdx].a) win(); else fail();
+}
+
+function dropReagent(e){
+    if(isLocked) return;
+    const val=e.dataTransfer.getData("text");
+    const data=db.reactor.q[qIdx];
+    if(val===data.c){
+        document.getElementById('r-liquid').style.height="85%";
+        document.getElementById('r-liquid').style.background=data.col;
+        document.getElementById('r-formula').innerText="✅ "+data.formula;
+        win();
+    } else fail();
+}
+
+function win(pts=10){
+    const key=`${currentType}_${qIdx}`;
+    if(!solvedQuestions.has(key)){
+        score+=pts; solvedQuestions.add(key);
+        document.getElementById('score-val').innerText=score;
+        sessionStorage.setItem('gameScore',score);
+        autoSaveScore();
+    }
+    isLocked=true;
+    document.getElementById('feedback').innerText="Correct! 🎉 +"+pts+" pts";
+    document.getElementById('feedback').style.color="#4ade80";
+    document.getElementById('next-btn').classList.remove('hidden');
+    document.getElementById('show-ans-btn').classList.add('hidden');
+}
+
+function fail(){
+    attempts++;
+    document.getElementById('feedback').innerText="Wrong! Try again. ("+attempts+" attempts)";
+    document.getElementById('feedback').style.color="#f87171";
+    if(attempts>=3) document.getElementById('show-ans-btn').classList.remove('hidden');
+}
+
+function revealAnswer(){
+    const data=db[currentType].q[qIdx];
+    const ans=data.a||data.correct||(data.c?data.c.join(""):data.f)||"";
+    document.getElementById('feedback').innerText="Answer: "+ans;
+    document.getElementById('feedback').style.color="#f59e0b";
+    isLocked=true; document.getElementById('next-btn').classList.remove('hidden');
+    document.getElementById('show-ans-btn').classList.add('hidden');
+}
+
+function nextQuestion(){ qIdx=(qIdx+1)%db[currentType].q.length; renderQuestion(); }
+function resetUI(){ isLocked=false; attempts=0; document.getElementById('feedback').innerText=""; document.getElementById('next-btn').classList.add('hidden'); document.getElementById('show-ans-btn').classList.add('hidden'); }
+
+// --- CATCHER ---
+let catcherInterval,timerInterval,timeLeft=30,cCorrect=0,cWrong=0,cScoreChange=0;
+const container=document.getElementById('catcher-container');
+const player=document.getElementById('player');
+container.onmousemove=(e)=>{
+    let rect=container.getBoundingClientRect();
+    let x=e.clientX-rect.left-45;
+    if(x<0)x=0; if(x>rect.width-90)x=rect.width-90;
+    player.style.left=x+"px";
+};
+function startCatcherGame(){
+    resetUI(); timeLeft=30; cCorrect=0; cWrong=0; cScoreChange=0;
+    document.getElementById('start-catcher').classList.add('hidden');
+    document.getElementById('catcher-timer').innerText=`Time: ${timeLeft}s`;
+    timerInterval=setInterval(()=>{ timeLeft--; document.getElementById('catcher-timer').innerText=`Time: ${timeLeft}s`; if(timeLeft<=0) endCatcherGame(); },1000);
+    catcherInterval=setInterval(()=>{ createFallingItem(Math.random()>0.4); },700);
+}
+function createFallingItem(isMetal){
+    const item=document.createElement('div'); item.className='falling-item';
+    item.innerText=isMetal?["Au","Na","Fe","Li","K","Zn"][Math.floor(Math.random()*6)]:["O","N","Cl","He","Ne","Ar"][Math.floor(Math.random()*6)];
+    item.style.color=isMetal?"#fbbf24":"#f87171";
+    item.style.left=Math.random()*(container.offsetWidth-30)+"px"; item.style.top="0px";
+    container.appendChild(item);
+    let top=0;
+    const fall=setInterval(()=>{
+        top+=4; item.style.top=top+"px";
+        const pLeft=parseInt(player.style.left||container.offsetWidth/2-45);
+        if(top>250&&top<290&&parseInt(item.style.left)>pLeft-20&&parseInt(item.style.left)<pLeft+80){
+            if(isMetal){cCorrect++;cScoreChange+=5;}else{cWrong++;cScoreChange-=10;}
+            clearInterval(fall); item.remove();
+        }
+        if(top>300){clearInterval(fall);item.remove();}
+    },20);
+}
+function endCatcherGame(){
+    stopCatcher();
+    score+=cScoreChange;
+    if(score<0) score=0;
+    document.getElementById('score-val').innerText=score;
+    sessionStorage.setItem('gameScore',score);
+    autoSaveScore();
+    document.getElementById('feedback').innerHTML=`Game Over! ✅ Caught: ${cCorrect} (+${cCorrect*5}pts)  ❌ Hit: ${cWrong} (-${cWrong*10}pts)<br><b>Net: ${cScoreChange>0?'+':''}${cScoreChange} pts</b>`;
+    document.getElementById('feedback').style.color=cScoreChange>=0?"#4ade80":"#f87171";
+    document.getElementById('start-catcher').classList.remove('hidden');
+    document.getElementById('start-catcher').innerText="▶ Play Again";
+}
+function stopCatcher(){ clearInterval(catcherInterval); clearInterval(timerInterval); document.querySelectorAll('.falling-item').forEach(i=>i.remove()); }
+
+// --- EXTERNAL GAME CHALLENGE ---
+function awardExternal(){
+    if(extClaimed){document.getElementById('ext-claimed').style.display='block';document.getElementById('ext-claimed').innerText='Already claimed!';return;}
+    extClaimed=true; score+=30;
+    document.getElementById('score-val').innerText=score;
+    sessionStorage.setItem('gameScore',score);
+    autoSaveScore();
+    document.getElementById('ext-claimed').style.display='block';
+}
+
+// --- SAVE SCORE TO PROFILE ---
+function autoSaveScore(){
+    try{
+        const raw=localStorage.getItem('currentUser');
+        if(!raw) return;
+        const user=JSON.parse(raw);
+        if((user.score||0)<score){
+            user.score=score;
+            localStorage.setItem('currentUser',JSON.stringify(user));
+            // Update in allUsers too
+            const users=JSON.parse(localStorage.getItem('allUsers')||'[]');
+            const idx=users.findIndex(u=>u.name===user.name);
+            if(idx!==-1){users[idx].score=score; localStorage.setItem('allUsers',JSON.stringify(users));}
+        }
+    }catch(e){}
+}
+
+function saveScoreToProfile(){
+    autoSaveScore();
+    const notif=document.getElementById('save-notif');
+    notif.style.opacity='1';
+    setTimeout(()=>notif.style.opacity='0',2500);
+}
+
+changeGame('elements');
+</script>
+</body>
+</html>
