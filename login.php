@@ -1,46 +1,56 @@
 <?php
-$conn = new mysqli(
-    getenv('MYSQLHOST')     ?: $_ENV['MYSQLHOST'],
-    getenv('MYSQLUSER')     ?: $_ENV['MYSQLUSER'],
-    getenv('MYSQLPASSWORD') ?: $_ENV['MYSQLPASSWORD'],
-    getenv('MYSQLDATABASE') ?: $_ENV['MYSQLDATABASE'],
-    (int)(getenv('MYSQLPORT') ?: $_ENV['MYSQLPORT'] ?: 3306)
-);
+session_start();
 
+$conn = new mysqli(
+    getenv('MYSQLHOST')     ?: $_ENV['MYSQLHOST']     ?? '',
+    getenv('MYSQLUSER')     ?: $_ENV['MYSQLUSER']     ?? '',
+    getenv('MYSQLPASSWORD') ?: $_ENV['MYSQLPASSWORD'] ?? '',
+    getenv('MYSQLDATABASE') ?: $_ENV['MYSQLDATABASE'] ?? '',
+    (int)(getenv('MYSQLPORT') ?: $_ENV['MYSQLPORT']   ?? 3306)
+);
 if ($conn->connect_error) {
     die(json_encode(['error' => 'DB connection failed: ' . $conn->connect_error]));
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $conn->real_escape_string($_POST['fullname']);
-    $grade = $conn->real_escape_string($_POST['grade']);
-    $password_raw = $_POST['password'];
+    $name     = trim($conn->real_escape_string($_POST['fullname'] ?? ''));
+    $pass_raw = $_POST['password'] ?? '';
+    $role     = trim($conn->real_escape_string($_POST['role']     ?? 'student'));
 
-    $checkUser = $conn->query("SELECT id FROM users WHERE fullname = '$name'");
-    if ($checkUser->num_rows > 0) {
-        header("Location: login.html?error=exists");
+    if (!$name || !$pass_raw) {
+        header("Location: login.html?loginerror=empty");
         exit();
     }
 
-    if (strlen($password_raw) < 6) {
-        header("Location: login.html?error=short");
-        exit();
-    }
-    if (count(count_chars($password_raw, 1)) == 1) {
-        header("Location: login.html?error=same");
+    $result = $conn->query("SELECT id, fullname, password, grade, role, subject FROM users WHERE fullname = '$name'");
+
+    if ($result->num_rows === 0) {
+        header("Location: login.html?loginerror=notfound");
         exit();
     }
 
-    $password_hashed = password_hash($password_raw, PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (fullname, grade, password) VALUES ('$name', '$grade', '$password_hashed')";
+    $user = $result->fetch_assoc();
 
-    if ($conn->query($sql) === TRUE) {
-        $userNameEncoded = urlencode($name);
-        header("Location: index.html?status=success&user=$userNameEncoded");
+    if (!password_verify($pass_raw, $user['password'])) {
+        header("Location: login.html?loginerror=wrongpass");
         exit();
+    }
+
+    // Сохраняем в сессию
+    $_SESSION['user_id']   = $user['id'];
+    $_SESSION['user_name'] = $user['fullname'];
+    $_SESSION['user_role'] = $user['role'];
+    $_SESSION['user_grade']= $user['grade'];
+    $_SESSION['user_subj'] = $user['subject'];
+
+    $userNameEncoded = urlencode($user['fullname']);
+
+    if ($user['role'] === 'teacher') {
+        header("Location: teacher_dashboard.html?user=$userNameEncoded");
     } else {
-        echo "Error: " . $conn->error;
+        header("Location: index.html?status=success&user=$userNameEncoded");
     }
+    exit();
 }
 $conn->close();
 ?>
