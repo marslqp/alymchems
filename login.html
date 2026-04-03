@@ -6,41 +6,132 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: "Poppins", sans-serif;
-            background: radial-gradient(circle at top, #0f172a, #020617);
+            background: radial-gradient(circle at top left, #0f172a, #020617);
             color: white;
-            height: 100vh;
+            min-height: 100vh;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px 40px;
+            text-align: center;
+        }
+        .hero-logo {
+            font-size: 36px;
+            font-weight: 600;
+            color: #38bdf8;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+        .hero-tagline {
+            font-size: 16px;
+            color: #94a3b8;
+            max-width: 480px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* ─── FEATURES STRIP ─── */
+        .features {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+            padding: 0 20px;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 20px 24px;
+            max-width: 200px;
+            text-align: center;
+        }
+        .feature-card .icon { font-size: 28px; margin-bottom: 10px; }
+        .feature-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #e2e8f0; }
+        .feature-card p { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+        /* ─── AUTH PANEL ─── */
+        .auth-wrapper {
             display: flex;
             justify-content: center;
-            align-items: center;
+            padding: 0 20px 60px;
         }
         .auth-container {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
+            background: rgba(255,255,255,0.05);
+            padding: 36px;
             border-radius: 20px;
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 440px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
-        h2 { margin-bottom: 25px; font-size: 28px; color: #38bdf8; }
-        .input-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-size: 14px; color: #94a3b8; margin-bottom: 5px; }
-        input {
+        .auth-container h2 { margin-bottom: 24px; font-size: 24px; color: #38bdf8; text-align: center; }
+
+        /* ─── ROLE SELECTOR ─── */
+        .role-selector { display: flex; gap: 12px; margin-bottom: 24px; }
+        .role-btn {
+            flex: 1;
+            padding: 14px 10px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: #94a3b8;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.25s;
+            font-family: inherit;
+        }
+        .role-btn .role-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+        .role-btn .role-label { font-size: 14px; font-weight: 600; display: block; }
+        .role-btn .role-sub { font-size: 11px; display: block; margin-top: 2px; }
+        .role-btn:hover { border-color: rgba(56,189,248,0.5); color: #cbd5e1; }
+        .role-btn.active {
+            border-color: #38bdf8;
+            background: rgba(56,189,248,0.1);
+            color: white;
+        }
+
+        /* ─── TEACHER CODE BOX ─── */
+        .teacher-code-box {
+            background: rgba(234,179,8,0.08);
+            border: 1px solid rgba(234,179,8,0.3);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #fde68a;
+            display: none;
+        }
+        .teacher-code-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
+
+        /* ─── FORM ─── */
+        .input-group { text-align: left; margin-bottom: 18px; }
+        label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
+        input, select {
             width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 11px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
+            font-family: inherit;
             outline: none;
             transition: 0.3s;
         }
-        input:focus { border-color: #38bdf8; background: rgba(255, 255, 255, 0.12); }
+        input:focus, select:focus { border-color: #38bdf8; background: rgba(255,255,255,0.12); }
+        select option { background: #1e293b; color: white; }
+
         .btn-auth {
             width: 100%;
             padding: 12px;
@@ -52,89 +143,200 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 10px;
+            margin-top: 6px;
+            font-family: inherit;
         }
         .btn-auth:hover { background: #1d4ed8; transform: translateY(-2px); }
-        .toggle-link { margin-top: 20px; font-size: 14px; color: #94a3b8; }
+
+        .toggle-link { margin-top: 18px; font-size: 14px; color: #94a3b8; text-align: center; }
         .toggle-link a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+
         .error-msg {
             background: rgba(239,68,68,0.15);
             border: 1px solid rgba(239,68,68,0.4);
             color: #f87171;
-            padding: 10px;
+            padding: 10px 14px;
             border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+        .success-msg {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.4);
+            color: #86efac;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
             display: none;
         }
     </style>
 </head>
 <body>
 
-<!-- LOGIN FORM -->
-<div class="auth-container" id="login-form">
-    <h2>Welcome Back</h2>
-    <div class="error-msg" id="login-error"></div>
-    <form onsubmit="handleLogin(event)">
-        <div class="input-group">
-            <label>Full Name</label>
-            <input type="text" id="login-user" required placeholder="Ivanov Ivan">
+<!-- ─── HERO SECTION ─── -->
+<div class="hero">
+    <div class="hero-logo">⚗️ AlymChems</div>
+    <p class="hero-tagline">
+        An interactive platform for chemistry learning — quizzes, tests, and class management for students and teachers.
+    </p>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="icon">🧪</div>
+            <h3>Practice Tests</h3>
+            <p>Topic-based chemistry quizzes with instant feedback</p>
         </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="login-pass" required placeholder="••••••••">
+        <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Track Progress</h3>
+            <p>See your scores and improvement over time</p>
         </div>
-        <button type="submit" class="btn-auth">Login</button>
-    </form>
-    <div class="toggle-link">
-        Don't have an account? <a href="#" onclick="toggleAuth()">Sign Up</a>
+        <div class="feature-card">
+            <div class="icon">👩‍🏫</div>
+            <h3>Teacher Dashboard</h3>
+            <p>Monitor your class, assign tests, view results</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🏆</div>
+            <h3>Leaderboard</h3>
+            <p>Compete with classmates and top the rankings</p>
+        </div>
     </div>
 </div>
 
-<!-- SIGNUP FORM -->
-<div class="auth-container" id="signup-form" style="display:none;">
-    <h2>Create Account</h2>
-    <div class="error-msg" id="signup-error"></div>
+<!-- ─── AUTH PANEL ─── -->
+<div class="auth-wrapper">
 
-    <!-- action ведёт на signup.php, method=POST -->
-    <form action="signup.php" method="POST" onsubmit="saveToLocalStorage(event)">
-        <div class="input-group">
-            <label>Full Name</label>
-            <!-- name="fullname" — именно это читает PHP через $_POST['fullname'] -->
-            <input type="text" name="fullname" required placeholder="Ivanov Ivan">
+    <!-- LOGIN -->
+    <div class="auth-container" id="login-form">
+        <h2>Welcome Back</h2>
+        <div class="error-msg" id="login-error"></div>
+
+        <div class="role-selector">
+            <button class="role-btn active" id="login-role-student" onclick="setLoginRole('student')">
+                <span class="role-icon">🎓</span>
+                <span class="role-label">Student</span>
+                <span class="role-sub">I study &amp; take tests</span>
+            </button>
+            <button class="role-btn" id="login-role-teacher" onclick="setLoginRole('teacher')">
+                <span class="role-icon">👩‍🏫</span>
+                <span class="role-label">Teacher</span>
+                <span class="role-sub">I monitor students</span>
+            </button>
         </div>
-        <div class="input-group">
-            <label>Grade</label>
-            <!-- name="grade" -->
-            <input type="number" name="grade" required placeholder="7" min="7" max="11">
+
+        <form action="login.php" method="POST">
+            <input type="hidden" name="role" id="login-role-input" value="student">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="fullname" required placeholder="Ivanov Ivan">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-auth">Login</button>
+        </form>
+        <div class="toggle-link">
+            Don't have an account? <a href="#" onclick="toggleAuth()">Sign Up</a>
         </div>
-        <div class="input-group">
-            <label>Password</label>
-            <!-- name="password" -->
-            <input type="password" name="password" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn-auth">Sign Up</button>
-    </form>
-    <div class="toggle-link">
-        Already have an account? <a href="#" onclick="toggleAuth()">Login</a>
     </div>
+
+    <!-- SIGNUP -->
+    <div class="auth-container" id="signup-form" style="display:none;">
+        <h2>Create Account</h2>
+        <div class="error-msg" id="signup-error"></div>
+        <div class="success-msg" id="signup-success"></div>
+
+        <div class="role-selector">
+            <button class="role-btn active" id="signup-role-student" onclick="setSignupRole('student')">
+                <span class="role-icon">🎓</span>
+                <span class="role-label">Student</span>
+                <span class="role-sub">I study &amp; take tests</span>
+            </button>
+            <button class="role-btn" id="signup-role-teacher" onclick="setSignupRole('teacher')">
+                <span class="role-icon">👩‍🏫</span>
+                <span class="role-label">Teacher</span>
+                <span class="role-sub">I monitor students</span>
+            </button>
+        </div>
+
+        <div class="teacher-code-box" id="teacher-code-info">
+            <strong>🔑 Teacher Access Code required</strong>
+            Teacher registration is restricted. Enter the secret code issued by school administration.
+        </div>
+
+        <form action="signup.php" method="POST" onsubmit="saveToLocalStorage(event)">
+            <input type="hidden" name="role" id="signup-role-input" value="student">
+
+            <div class="input-group" id="tc-field" style="display:none;">
+                <label>Teacher Access Code</label>
+                <input type="password" name="teacher_code" id="teacher_code_input" placeholder="••••••••">
+            </div>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="fullname" required placeholder="Ivanov Ivan">
+            </div>
+
+            <div class="input-group" id="grade-field">
+                <label>Grade</label>
+                <input type="number" name="grade" placeholder="7" min="7" max="11">
+            </div>
+
+            <div class="input-group" id="subject-field" style="display:none;">
+                <label>Subject</label>
+                <select name="subject">
+                    <option value="">Select subject</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Math">Math</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Password (min. 6 chars)</label>
+                <input type="password" name="password" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-auth">Create Account</button>
+        </form>
+        <div class="toggle-link">
+            Already have an account? <a href="#" onclick="toggleAuth()">Login</a>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    // Показываем ошибки из URL (?error=exists и т.д.)
-    window.addEventListener('DOMContentLoaded', function() {
-        const params = new URLSearchParams(window.location.search);
-        const error = params.get('error');
-        if (error) {
-            toggleAuth(); // показываем форму регистрации
-            const el = document.getElementById('signup-error');
-            el.style.display = 'block';
-            if (error === 'exists')  el.innerText = '❌ This name is already taken.';
-            if (error === 'short')   el.innerText = '❌ Password must be at least 6 characters.';
-            if (error === 'same')    el.innerText = '❌ Password is too simple.';
-            if (error === 'empty')   el.innerText = '❌ Please fill in all fields.';
-        }
-    });
+    let currentSignupRole = 'student';
+    let currentLoginRole = 'student';
+
+    function setSignupRole(role) {
+        currentSignupRole = role;
+        document.getElementById('signup-role-input').value = role;
+        document.getElementById('signup-role-student').classList.toggle('active', role === 'student');
+        document.getElementById('signup-role-teacher').classList.toggle('active', role === 'teacher');
+        document.getElementById('grade-field').style.display   = role === 'student' ? 'block' : 'none';
+        document.getElementById('subject-field').style.display = role === 'teacher' ? 'block' : 'none';
+        document.getElementById('tc-field').style.display      = role === 'teacher' ? 'block' : 'none';
+        document.getElementById('teacher-code-info').style.display = role === 'teacher' ? 'block' : 'none';
+        const gradeInput = document.querySelector('input[name="grade"]');
+        if (gradeInput) gradeInput.required = (role === 'student');
+        const tcInput = document.getElementById('teacher_code_input');
+        if (tcInput) tcInput.required = (role === 'teacher');
+    }
+
+    function setLoginRole(role) {
+        currentLoginRole = role;
+        document.getElementById('login-role-input').value = role;
+        document.getElementById('login-role-student').classList.toggle('active', role === 'student');
+        document.getElementById('login-role-teacher').classList.toggle('active', role === 'teacher');
+    }
 
     function toggleAuth() {
         const login = document.getElementById('login-form');
@@ -148,25 +350,49 @@
         }
     }
 
-    // Сохраняем имя в localStorage ДО отправки формы (чтобы index.html знал имя)
     function saveToLocalStorage(e) {
         const nameInput = document.querySelector('input[name="fullname"]');
         const gradeInput = document.querySelector('input[name="grade"]');
+        const roleInput = document.getElementById('signup-role-input');
         if (nameInput && nameInput.value) {
             localStorage.setItem('currentUser', JSON.stringify({
                 name: nameInput.value,
-                grade: gradeInput.value
+                grade: gradeInput ? gradeInput.value : '',
+                role: roleInput ? roleInput.value : 'student'
             }));
         }
-        // Форма отправляется дальше (не preventDefault) → PHP получает данные
     }
 
-    function handleLogin(e) {
-        e.preventDefault();
-        alert('Login через БД будет добавлен позже.');
-        window.location.href = 'index.html';
-    }
+    window.addEventListener('DOMContentLoaded', function () {
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        const form = params.get('form');
+        if (error) {
+            if (form === 'signup' || !form) toggleAuth();
+            const el = document.getElementById('signup-error');
+            el.style.display = 'block';
+            const msgs = {
+                exists:   '❌ This name is already taken.',
+                short:    '❌ Password must be at least 6 characters.',
+                same:     '❌ Password is too simple.',
+                empty:    '❌ Please fill in all fields.',
+                badcode:  '❌ Invalid teacher access code.',
+                dberror:  '❌ Server error. Please try again.'
+            };
+            el.innerText = msgs[error] || '❌ Unknown error.';
+        }
+        const loginError = params.get('loginerror');
+        if (loginError) {
+            const el = document.getElementById('login-error');
+            el.style.display = 'block';
+            const msgs = {
+                notfound: '❌ User not found.',
+                wrongpass:'❌ Incorrect password.',
+                empty:    '❌ Please fill in all fields.'
+            };
+            el.innerText = msgs[loginError] || '❌ Login failed.';
+        }
+    });
 </script>
-
 </body>
 </html>
